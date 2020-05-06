@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yujb.house.dao.HouseMapper">
+	<!--批量添加100条信息  -->
+	<insert id="addHouses">
+		insert into house values
+		<foreach collection="houses" item="a" separator=",">
+			(0,#{a.createDate},#{a.name},#{a.phone},#{a.massage},#{a.tid})
+		</foreach>
+	</insert>
+	<!-- 查询列表 -->
+	<select id="selects" resultType="House">
+		select * from house as a
+			left join houseType as b
+		on a.tid = b.tid
+		<where>
+			<if test="name!=null and name!=''">
+				a.name like '%${name}%'
+			</if>
+			<if test="phone !=null and phone!=''">
+				and a.phone like '%${phone}%'
+			</if>
+			<if test="tname!=null and tname!=''">
+				and b.tname like '%${tname}%'
+			</if>
+			<if test="p1!=null">
+				and b.price >=#{p1}
+			</if>
+			<if test="p2!=null">
+				and b.price &lt;=#{p2}
+			</if>
+			<if test="t1!=null and t1!=''">
+				and a.createDate >=#{t1}
+			</if>
+			<if test="t2!=null and t2!=''">
+				and a.createDate &lt;#{t2}
+			</if>
+		</where>
+	</select>
+	<!-- 单条新增 -->
+	<insert id="addOne">
+		insert into house value(0,#{a.createDate},#{a.name},#{a.phone},#{a.massage},#{a.tid})
+	</insert>
+	
+	<select id="getAllType" resultType="HouseType">
+		select * from houseType
+	</select>
+</mapper>
